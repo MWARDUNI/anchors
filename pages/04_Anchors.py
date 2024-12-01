@@ -51,7 +51,7 @@ def predict_lr(texts):
     return c.predict(vectorizer.transform(texts))
 
 # Initialize explainer
-explainer = anchor_text.AnchorText(nlp, ['negative', 'positive'], use_unk_distribution=False)
+explainer = anchor_text.AnchorText(nlp, ['negative', 'positive'], use_unk_distribution=True)
 
 # Streamlit UI
 st.title("Sentiment Analysis and Explainability")
