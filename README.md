@@ -22,5 +22,8 @@ To run the app:
 
 Libraries:
 
-- [Anchor]()
-- [Vader]()
+- [Anchor](https://github.com/marcotcr/anchor/tree/master?tab=readme-ov-file)
+- [Vader](https://github.com/vaderSentiment/vaderSentiment)
+
+
+
