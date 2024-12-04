@@ -7,12 +7,12 @@ import sklearn.linear_model
 from sklearn.feature_extraction.text import CountVectorizer
 from anchor import anchor_text
 import spacy
-import time
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Load Spacy model
 nlp = spacy.load('en_core_web_sm')
 
-# Functions from your code
+# Functions for loading data
 def clean(data: str):
     return data.strip()
 
@@ -46,9 +46,8 @@ val_vectors = vectorizer.transform(val)
 c = sklearn.linear_model.LogisticRegression()
 c.fit(train_vectors, train_labels)
 
-# Prediction function
-def predict_lr(texts):
-    return c.predict(vectorizer.transform(texts))
+# VADER Sentiment Analyzer
+analyzer = SentimentIntensityAnalyzer()
 
 # Initialize explainer
 explainer = anchor_text.AnchorText(nlp, ['negative', 'positive'], use_unk_distribution=True)
@@ -58,6 +57,22 @@ st.title("Sentiment Analysis and Explainability")
 
 st.subheader("Input a sentence to analyze sentiment")
 text_input = st.text_area("Enter your text here:")
+
+# Model choice dropdown
+st.subheader("Choose a model to anchor:")
+option = st.selectbox("Models", ["Logistic Regression", "VADER"])
+vader = True if option == "VADER" else False
+
+if vader:
+    # Prediction function for VADER
+    def predict_lr(texts):
+        x = 1 if analyzer.polarity_scores(texts)['compound'] >=0 else 0
+        x = np.array([x])
+        return x
+else:
+    # Prediction function for Logistic Regression
+    def predict_lr(texts):
+        return c.predict(vectorizer.transform(texts))
 
 if text_input:
     pred_class = explainer.class_names[predict_lr([text_input])[0]]
